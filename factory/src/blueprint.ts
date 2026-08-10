@@ -4,7 +4,12 @@ import Ajv from 'ajv';
 import { ModuleDefinition, ProjectBlueprint, ProjectNode } from './types.js';
 import schema from '../schemas/factory.schema.json' with { type: 'json' };
 
-const ajv = new Ajv({ allErrors: true, strict: false });
+type AjvConstructor = new (options?: { allErrors?: boolean; strict?: boolean }) => {
+  compile<T>(schema: unknown): ((value: unknown) => value is T) & { errors?: Array<{ instancePath?: string; message?: string }> | null };
+};
+
+const AjvCtor = (Ajv as unknown as { default?: AjvConstructor }).default ?? (Ajv as unknown as AjvConstructor);
+const ajv = new AjvCtor({ allErrors: true, strict: false });
 const validateSchema = ajv.compile<ProjectBlueprint>(schema);
 
 function normalizeModule(module: string | ModuleDefinition) {
@@ -16,16 +21,16 @@ function validateSemantics(blueprint: ProjectBlueprint): void {
   const ids = new Set(modules.map((module) => module.id));
 
   if (ids.size !== modules.length) {
-    throw new Error('Invalid blueprint: modules must have unique ids');
+    throw new Error('Blueprint inválido: los módulos deben tener identificadores únicos');
   }
 
   for (const module of modules) {
     for (const dependency of module.dependsOn) {
       if (!ids.has(dependency)) {
-        throw new Error(`Invalid blueprint: module '${module.id}' depends on unknown module '${dependency}'`);
+        throw new Error(`Blueprint inválido: el módulo '${module.id}' depende del módulo desconocido '${dependency}'`);
       }
       if (dependency === module.id) {
-        throw new Error(`Invalid blueprint: module '${module.id}' cannot depend on itself`);
+        throw new Error(`Blueprint inválido: el módulo '${module.id}' no puede depender de sí mismo`);
       }
     }
   }
@@ -34,8 +39,8 @@ function validateSemantics(blueprint: ProjectBlueprint): void {
   const visited = new Set<string>();
   const graph = new Map(modules.map((module) => [module.id, module.dependsOn]));
 
-  const visit = (id: string) => {
-    if (visiting.has(id)) throw new Error(`Invalid blueprint: cyclic module dependency involving '${id}'`);
+  const visit = (id: string): void => {
+    if (visiting.has(id)) throw new Error(`Blueprint inválido: dependencia cíclica relacionada con '${id}'`);
     if (visited.has(id)) return;
     visiting.add(id);
     for (const dependency of graph.get(id) ?? []) visit(dependency);
@@ -50,8 +55,10 @@ export async function loadBlueprint(path: string): Promise<ProjectBlueprint> {
   const source = await readFile(path, 'utf8');
   const value = parse(source) as unknown;
   if (!validateSchema(value)) {
-    const details = (validateSchema.errors ?? []).map((e) => `${e.instancePath || '/'} ${e.message}`).join('; ');
-    throw new Error(`Invalid blueprint: ${details}`);
+    const details = (validateSchema.errors ?? [])
+      .map((error) => `${error.instancePath || '/'} ${error.message ?? 'error de validación'}`)
+      .join('; ');
+    throw new Error(`Blueprint inválido: ${details}`);
   }
   validateSemantics(value);
   return value;
