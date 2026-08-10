@@ -1,3 +1,8 @@
+export interface ModuleDefinition {
+  id: string;
+  dependsOn?: string[];
+}
+
 export interface ProjectBlueprint {
   apiVersion: 'factory.leados.dev/v1';
   project: { name: string; type: 'saas' | 'api' | 'library' | 'agent' | 'automation' };
@@ -10,7 +15,7 @@ export interface ProjectBlueprint {
     ai: string;
     deploy: string;
   };
-  modules: string[];
+  modules: Array<string | ModuleDefinition>;
   outputs: { github: boolean; notion: boolean };
 }
 

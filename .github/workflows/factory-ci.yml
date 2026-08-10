@@ -1,0 +1,29 @@
+name: factory-ci
+
+on:
+  push:
+    paths:
+      - 'factory/**'
+  pull_request:
+    paths:
+      - 'factory/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: factory
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm build
+      - run: pnpm test
+      - run: pnpm validate
+      - run: pnpm plan
