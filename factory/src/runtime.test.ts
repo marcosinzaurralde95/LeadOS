@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { loadBlueprint, toAst } from './blueprint.js';
+import { toAst } from './blueprint.js';
 import { plan } from './planner.js';
 import { ModuleWorker } from './workers.js';
 import { Runtime } from './runtime.js';
@@ -32,5 +32,3 @@ describe('Runtime', () => {
     ]);
   });
 });
-
-void loadBlueprint;
