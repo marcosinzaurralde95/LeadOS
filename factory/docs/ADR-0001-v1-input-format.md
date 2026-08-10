@@ -1,32 +1,32 @@
-# ADR-0001 — v1 blueprint input format
+# ADR-0001 — Formato de entrada declarativo de v1
 
-## Status
+## Estado
 
-Accepted
+Aceptado
 
-## Decision
+## Decisión
 
-LeadOS Factory v1 uses YAML as its declarative project format, validated by JSON Schema.
+LeadOS Factory v1 utiliza YAML como formato declarativo de proyectos, validado mediante JSON Schema.
 
-## Rejected alternative
+## Alternativa rechazada
 
-A custom Factory DSL is deferred until the YAML contract demonstrates a real usability limitation.
+Un DSL propio de Factory queda pospuesto hasta que el contrato YAML demuestre una limitación real de usabilidad.
 
-## Rationale
+## Justificación
 
-A custom language would introduce a lexer, parser, grammar versioning, compatibility rules and a larger testing surface before Factory can generate useful artifacts. YAML provides human readability, mature tooling and straightforward interoperability with CI/CD and LLM-based development agents.
+Un lenguaje propio introduciría lexer, parser, versionado de gramática, reglas de compatibilidad y una superficie de pruebas mayor antes de que Factory pueda generar artefactos útiles. YAML ofrece legibilidad humana, herramientas maduras e interoperabilidad directa con CI/CD y agentes de desarrollo basados en LLM.
 
-The internal architecture remains parser-independent: YAML is converted to a typed AST before planning or generation. A future DSL can therefore target the same AST without changing the Runtime contract.
+La arquitectura interna permanece independiente del parser: YAML se convierte en un AST tipado antes de la planificación o generación. Un DSL futuro podrá apuntar al mismo AST sin modificar el contrato del Runtime.
 
-## Consequences
+## Consecuencias
 
-Positive:
-- faster v0.1 delivery;
-- lower maintenance cost;
-- easy machine and human authoring;
-- no vendor lock-in;
-- future DSL remains possible.
+Positivas:
+- entrega más rápida de v0.1;
+- menor coste de mantenimiento;
+- edición sencilla por humanos y máquinas;
+- ausencia de vendor lock-in;
+- posibilidad de incorporar un DSL posteriormente.
 
-Negative:
-- YAML is less expressive than a purpose-built language;
-- semantic constraints must be implemented separately from JSON Schema.
+Negativas:
+- YAML es menos expresivo que un lenguaje específico;
+- las restricciones semánticas deben implementarse por separado del JSON Schema.
