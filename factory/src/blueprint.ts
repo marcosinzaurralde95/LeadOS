@@ -1,15 +1,18 @@
+import { createRequire } from 'node:module';
 import { readFile } from 'node:fs/promises';
 import { parse } from 'yaml';
-import Ajv from 'ajv';
 import { ModuleDefinition, ProjectBlueprint, ProjectNode } from './types.js';
 import schema from '../schemas/factory.schema.json' with { type: 'json' };
 
+type ValidationError = { instancePath?: string; message?: string };
+type Validator = ((value: unknown) => boolean) & { errors?: ValidationError[] | null };
 type AjvConstructor = new (options?: { allErrors?: boolean; strict?: boolean }) => {
-  compile<T>(schema: unknown): ((value: unknown) => value is T) & { errors?: Array<{ instancePath?: string; message?: string }> | null };
+  compile<T>(schema: unknown): Validator & ((value: unknown) => value is T);
 };
 
-const AjvCtor = (Ajv as unknown as { default?: AjvConstructor }).default ?? (Ajv as unknown as AjvConstructor);
-const ajv = new AjvCtor({ allErrors: true, strict: false });
+const require = createRequire(import.meta.url);
+const Ajv = require('ajv') as AjvConstructor;
+const ajv = new Ajv({ allErrors: true, strict: false });
 const validateSchema = ajv.compile<ProjectBlueprint>(schema);
 
 function normalizeModule(module: string | ModuleDefinition) {
