@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://leados.dev/factory/schema/v1",
+  "title": "LeadOS Factory Blueprint",
+  "type": "object",
+  "required": ["apiVersion", "project", "stack", "modules", "outputs"],
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": { "const": "factory.leados.dev/v1" },
+    "project": {
+      "type": "object",
+      "required": ["name", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9_-]+$" },
+        "type": { "type": "string", "enum": ["saas", "api", "library", "agent", "automation"] }
+      }
+    },
+    "stack": {
+      "type": "object",
+      "required": ["frontend", "backend", "database", "ai", "deploy"],
+      "additionalProperties": false,
+      "properties": {
+        "frontend": { "type": "string" },
+        "backend": { "type": "string" },
+        "database": { "type": "string" },
+        "orm": { "type": "string" },
+        "auth": { "type": "string" },
+        "ai": { "type": "string" },
+        "deploy": { "type": "string" }
+      }
+    },
+    "modules": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "outputs": {
+      "type": "object",
+      "required": ["github", "notion"],
+      "additionalProperties": false,
+      "properties": {
+        "github": { "type": "boolean" },
+        "notion": { "type": "boolean" }
+      }
+    }
+  }
+}
