@@ -1,0 +1,26 @@
+{
+  "name": "@leados/factory",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Declarative project factory for AI-assisted software engineering.",
+  "type": "module",
+  "bin": { "factory": "dist/cli.js" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "validate": "tsx src/cli.ts validate examples/leados.yaml",
+    "plan": "tsx src/cli.ts plan examples/leados.yaml",
+    "generate": "tsx src/cli.ts generate examples/leados.yaml --out .factory-output"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "commander": "^14.0.0",
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}
