@@ -22,8 +22,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: pnpm
-          cache-dependency-path: factory/package.json
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm build
       - run: pnpm test
