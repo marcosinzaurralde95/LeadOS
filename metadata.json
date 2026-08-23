@@ -1,0 +1,6 @@
+{
+  "name": "LeadOS",
+  "description": "Declarative project factory and blueprint compiler for AI-assisted software engineering",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
